@@ -19,6 +19,10 @@ pub enum DetectAes128EcbError {
     Io(#[from] io::Error),
 }
 
+/// Tries to detect if there is a line in the input that has been encrypted by
+/// AES-128-ECB, by detecting block duplication.
+///
+/// If no block duplication found in all lines, returns `Ok(None)`;
 pub fn detect_aes_128_ecb(input: impl io::Read) -> Result<Option<Vec<u8>>, DetectAes128EcbError> {
     let reader = io::BufReader::new(input);
 

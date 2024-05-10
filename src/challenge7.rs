@@ -1,6 +1,7 @@
 use aes::cipher::{generic_array::GenericArray, BlockDecrypt, KeyInit};
 use aes::Aes128;
 
+/// Decrypt AES-128-ECB encrypted ciphertext using the key.
 pub fn decrypt_aes_128_ecb(key: &[u8], ciphertext: &[u8]) -> Vec<u8> {
     let cipher = Aes128::new(&GenericArray::clone_from_slice(key));
 

@@ -55,6 +55,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "cryptopals"
+version = "0.1.0"
+dependencies = [
+ "aes",
+ "base64",
+ "hex",
+ "thiserror",
+]
+
+[[package]]
 name = "generic-array"
 version = "0.14.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -101,16 +111,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0fa76aaf39101c457836aec0ce2316dbdc3ab723cdda1c6bd4e6ad4208acaca7"
 dependencies = [
  "proc-macro2",
-]
-
-[[package]]
-name = "set1"
-version = "0.1.0"
-dependencies = [
- "aes",
- "base64",
- "hex",
- "thiserror",
 ]
 
 [[package]]

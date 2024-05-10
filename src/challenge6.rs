@@ -160,7 +160,7 @@ pub fn decode_base64_from_file(path: &str) -> Result<Vec<u8>, DecodeBase64FromFi
 
 #[cfg(test)]
 mod tests {
-    use super::super::{decode_base64, repeating_key_xor};
+    use super::super::repeating_key_xor;
     use super::*;
 
     #[test]
