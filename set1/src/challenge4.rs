@@ -2,7 +2,7 @@ use std::io::{self, BufRead};
 
 use thiserror::Error;
 
-use super::{guess_single_byte_xor_key, SingleByteXorGuess};
+use super::{decode_hex, guess_single_byte_xor_key, SingleByteXorGuess};
 
 #[derive(Debug, Error)]
 pub enum DetectSingleByteXorError {
@@ -25,7 +25,7 @@ pub fn detect_single_byte_xor(
     let mut best_guess: Option<SingleByteXorGuess> = None;
 
     for line in reader.lines() {
-        let input = hex::decode(line?)?;
+        let input = decode_hex(&line?)?;
         let guess = guess_single_byte_xor_key(&input);
         if best_guess.is_none() || guess.score > best_guess.clone().unwrap().score {
             best_guess = Some(guess);
@@ -48,7 +48,7 @@ mod test {
 
     #[test]
     fn detect_single_byte_xor_ok() {
-        let file = File::open("data/test_single_byte_xor.txt").expect("Cannot open file");
+        let file = File::open("data/challenge4.txt").expect("Cannot open file");
         let guess = detect_single_byte_xor(file).expect("Unexpected error");
         assert_eq!(guess.key as char, '5');
         assert_eq!(guess.output, "Now that the party is jumping\n".as_bytes());

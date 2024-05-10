@@ -20,8 +20,7 @@ mod test {
 
     #[test]
     fn decrypt_aes_128_ecb_ok() {
-        let ciphertext =
-            decode_base64_from_file("data/test_decrypt_aes_128_ecb.txt").expect("Unexpected error");
+        let ciphertext = decode_base64_from_file("data/challenge7.txt").expect("Unexpected error");
         let key = "YELLOW SUBMARINE";
 
         let plaintext = decrypt_aes_128_ecb(key.as_bytes(), &ciphertext);

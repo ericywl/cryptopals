@@ -174,8 +174,7 @@ mod tests {
 
     #[test]
     fn guess_repeating_key_xor_key_size_ok() {
-        let buf =
-            decode_base64_from_file("data/test_repeating_key_xor.txt").expect("Unexpected error");
+        let buf = decode_base64_from_file("data/challenge6.txt").expect("Unexpected error");
 
         let key_size = guess_repeating_key_xor_key_size(&buf, 40).expect("Unexpected error");
         assert_eq!(key_size, 29);
@@ -191,8 +190,7 @@ mod tests {
 
     #[test]
     fn guess_repeating_key_xor_key_ok() {
-        let buf =
-            decode_base64_from_file("data/test_repeating_key_xor.txt").expect("Unexpected error");
+        let buf = decode_base64_from_file("data/challenge6.txt").expect("Unexpected error");
 
         let key = guess_repeating_key_xor_key(&buf, 40).expect("Unexpected error");
         assert_eq!(key, "Terminator X: Bring the noise".as_bytes());
