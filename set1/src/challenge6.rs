@@ -1,8 +1,11 @@
-use std::io::{self, BufRead};
+use std::{
+    fs::File,
+    io::{self, BufRead},
+};
 
 use thiserror::Error;
 
-use super::{fixed_xor, guess_single_byte_xor_key, FixedXorError};
+use super::{decode_base64, fixed_xor, guess_single_byte_xor_key, FixedXorError};
 
 /// Compute the hamming distance between two byte arrays.
 /// The byte arrays have to be equal length.
@@ -81,19 +84,6 @@ fn guess_repeating_key_xor_key_size(
     Ok(best_key_size)
 }
 
-/// Reads from input, ignoring newline character.
-pub fn read_string_ignoring_newline(input: impl io::Read) -> Result<String, io::Error> {
-    let reader = io::BufReader::new(input);
-
-    let mut read_str = String::new();
-    for line_result in reader.lines() {
-        let line = line_result?;
-        read_str = read_str + &line.replace("\n", "");
-    }
-
-    Ok(read_str)
-}
-
 /// Transpose transposes the matrix.
 /// For example, `[[1, 2, 3], [4, 5, 6]]` will turn into `[[1, 4], [2, 5], [3, 6]]`.
 pub fn transpose<T>(v: Vec<Vec<T>>) -> Vec<Vec<T>> {
@@ -138,10 +128,38 @@ pub fn guess_repeating_key_xor_key(
     Ok(key)
 }
 
+/// Reads from input, ignoring newline character.
+fn read_string_ignoring_newline(input: impl io::Read) -> Result<String, io::Error> {
+    let reader = io::BufReader::new(input);
+
+    let mut read_str = String::new();
+    for line_result in reader.lines() {
+        let line = line_result?;
+        read_str = read_str + &line.replace("\n", "");
+    }
+
+    Ok(read_str)
+}
+
+#[derive(Debug, Error)]
+pub enum DecodeBase64FromFileError {
+    #[error(transparent)]
+    Io(#[from] io::Error),
+
+    #[error(transparent)]
+    Base64Decode(#[from] base64::DecodeError),
+}
+
+pub fn decode_base64_from_file(path: &str) -> Result<Vec<u8>, DecodeBase64FromFileError> {
+    let file = File::open(path)?;
+    let read_str = read_string_ignoring_newline(file)?;
+
+    let result = decode_base64(&read_str)?;
+    Ok(result)
+}
+
 #[cfg(test)]
 mod tests {
-    use std::fs::File;
-
     use super::super::{decode_base64, repeating_key_xor};
     use super::*;
 
@@ -156,9 +174,8 @@ mod tests {
 
     #[test]
     fn guess_repeating_key_xor_key_size_ok() {
-        let file = File::open("data/test_repeating_key_xor.txt").expect("Cannot open file");
-        let read_str = read_string_ignoring_newline(file).expect("Unexpected error");
-        let buf = decode_base64(&read_str).expect("Decode base64 error");
+        let buf =
+            decode_base64_from_file("data/test_repeating_key_xor.txt").expect("Unexpected error");
 
         let key_size = guess_repeating_key_xor_key_size(&buf, 40).expect("Unexpected error");
         assert_eq!(key_size, 29);
@@ -174,14 +191,16 @@ mod tests {
 
     #[test]
     fn guess_repeating_key_xor_key_ok() {
-        let file = File::open("data/test_repeating_key_xor.txt").expect("Cannot open file");
-        let read_str = read_string_ignoring_newline(file).expect("Unexpected error");
-        let buf = decode_base64(&read_str).expect("Decode base64 error");
+        let buf =
+            decode_base64_from_file("data/test_repeating_key_xor.txt").expect("Unexpected error");
 
         let key = guess_repeating_key_xor_key(&buf, 40).expect("Unexpected error");
         assert_eq!(key, "Terminator X: Bring the noise".as_bytes());
 
         let plaintext = repeating_key_xor(&buf, &key);
-        println!("{}", String::from_utf8(plaintext).unwrap())
+        let plaintext = String::from_utf8(plaintext).unwrap();
+
+        println!("{plaintext}");
+        assert!(plaintext.contains("Play that funky music"));
     }
 }
