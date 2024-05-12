@@ -24,3 +24,9 @@ pub use challenge8::*;
 
 pub mod challenge9;
 pub use challenge9::*;
+
+pub mod challenge10;
+pub use challenge10::*;
+
+pub mod challenge11;
+pub use challenge11::*;

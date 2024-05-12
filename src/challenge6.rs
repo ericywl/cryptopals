@@ -129,7 +129,7 @@ pub fn guess_repeating_key_xor_key(
 }
 
 /// Reads from input, ignoring newline character.
-fn read_string_ignoring_newline(input: impl io::Read) -> Result<String, io::Error> {
+pub fn read_string_ignoring_newline(input: impl io::Read) -> Result<String, io::Error> {
     let reader = io::BufReader::new(input);
 
     let mut read_str = String::new();
