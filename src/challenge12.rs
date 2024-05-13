@@ -155,7 +155,8 @@ where
             // will be encrypting `[0, 0, 0, 0, y, e, s, 0x1]` because it will be padded before encryption.
             // This will always succeed because we consider all 256 values in trying to search the byte.
             // However, in the next iteration, the oracle will be encrypting `[0, 0, 0, y, e, s, 0x2, 0x2]`
-            // and our previously discovered `0x1` is no longer correct.
+            // and our previously discovered `0x1` is no longer correct, and hence will result in an empty
+            // potential byte.
             if block_num == num_blocks - 1
                 && potential_byte.is_none()
                 && curr_suffix_block[block_size - 1] == 0x1
