@@ -30,3 +30,6 @@ pub use challenge10::*;
 
 pub mod challenge11;
 pub use challenge11::*;
+
+pub mod challenge12;
+pub use challenge12::*;
